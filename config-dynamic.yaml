@@ -20,4 +20,6 @@ http:
         coraza:
           directives:
             - SecRuleEngine On
-            - SecRule REQUEST_URI "@streq /admin" "id:101,phase:1,t:lowercase,log,deny"
+            - SecDebugLog /dev/stdout
+            - SecDebugLogLevel 9
+            - SecRule REQUEST_URI "@streq /admin" "id:101,phase:1,log,deny,status:403"

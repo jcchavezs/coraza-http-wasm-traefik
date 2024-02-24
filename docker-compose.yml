@@ -8,7 +8,7 @@ services:
     command:
       - "--configFile=/etc/traefik/config-static.yaml"
     volumes:
-      - ./${CONFIG_DIR}:/etc/traefik
+      - ./${CONFIG_DIR}:/etc/traefik # by default CONFIG_DIR=.
       - ./build:/plugins-local/src/github.com/jcchavezs/coraza-http-wasm
     depends_on:
       - httpbin
