@@ -35,7 +35,8 @@ jobs:
       - name: Create draft release
         run: |
           set +e
-          gh release create $VERSION --draft --title $VERSION
+          echo "Creating release $VERSION"
+          gh release create $VERSION --draft --title "$VERSION"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VERSION: ${{ github.event.inputs.version }}
