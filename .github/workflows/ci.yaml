@@ -29,6 +29,8 @@ jobs:
 
       - name: Download artifact
         run: go run mage.go downloadArtifact
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Run e2e tests
         run: go run mage.go e2e
