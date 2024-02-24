@@ -139,7 +139,6 @@ func E2E() error {
 	if err = copy(".traefik.yml", "build/.traefik.yml"); err != nil {
 		return err
 	}
-	defer os.Remove("build/.traefik.yml")
 
 	if err = sh.RunV("docker-compose", "--file", "docker-compose.yml", "--env-file", "e2e/.env", "up", "-d", "traefik"); err != nil {
 		return err
