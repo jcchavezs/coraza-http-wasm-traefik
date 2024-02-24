@@ -1,0 +1,23 @@
+version: '3.7'
+
+services:
+  traefik:
+    image: traefik:v3.0.0-rc1
+    ports:
+      - 8080:80
+    command:
+      - "--configFile=/etc/traefik/config-static.yaml"
+    volumes:
+      - ./${CONFIG_DIR}:/etc/traefik
+      - ./build:/plugins-local/src/github.com/jcchavezs/coraza-http-wasm
+    depends_on:
+      - httpbin
+
+  httpbin:
+    image: mccutchen/go-httpbin:v2.9.0
+    environment:
+      - APP_NAME=httpbin
+      - MAX_BODY_SIZE=15728640 # 15 MiB
+    command: [ "/bin/go-httpbin", "-port", "8000" ]
+    ports:
+      - 8000:8000

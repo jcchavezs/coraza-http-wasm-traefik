@@ -1,0 +1,23 @@
+http:
+  routers:
+    httpbin:
+      rule: PathPrefix(`/`)
+      service: httpbin
+      entryPoints:
+        - web
+      middlewares:
+        - waf
+
+  services:
+    httpbin:
+      loadBalancer:
+        servers:
+          - url: http://host.docker.internal:8000 # https://community.traefik.io/t/solved-hitting-a-500-internal-server-error-caused-by-unsupported-protocol-scheme-with-a-file-config/10537/6
+
+  middlewares:
+    waf:
+      plugin:
+        coraza:
+          directives:
+            - SecRuleEngine On
+            - SecRule REQUEST_URI "@streq /admin" "id:101,phase:1,t:lowercase,log,deny"
