@@ -116,7 +116,6 @@ func DownloadArtifact() error {
 }
 
 func copy(src, dst string) error {
-	fmt.Printf("Copying %s to %s\n", src, dst)
 	in, err := os.Open(src)
 	if err != nil {
 		return err

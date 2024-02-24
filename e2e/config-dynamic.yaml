@@ -12,7 +12,7 @@ http:
     httpbin:
       loadBalancer:
         servers:
-          - url: http://host.docker.internal:8000 # https://community.traefik.io/t/solved-hitting-a-500-internal-server-error-caused-by-unsupported-protocol-scheme-with-a-file-config/10537/6
+          - url: http://httpbin:8000
 
   middlewares:
     waf:
