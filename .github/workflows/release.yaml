@@ -14,6 +14,12 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
+
+    permissions:
+      # Give the default GITHUB_TOKEN write permission to commit and push the
+      # added or changed files to the repository.
+      contents: write
+
     steps:
       - uses: actions/checkout@v4
 
@@ -23,11 +29,29 @@ jobs:
           go-version: ${{ env.GO_VERSION }}
           cache: true
 
-      - name: Download artifact
+      - name: Download coraza-http-wasm artifact
         run: go run mage.go downloadArtifact
         env:
           VERSION: ${{ github.event.inputs.version }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Run e2e tests
+        run: go run mage.go e2eLocal
+
+      - name: Update version to ${{ github.event.inputs.version }}
+        run: go run mage.go updateVersion
+        env:
+          VERSION: ${{ github.event.inputs.version }}
+
+      - uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          file_pattern: "*.yaml"
+          add_options: "-u"
+          branch: main
+          tagging_message: "${{ github.event.inputs.version }}"
+
+      - name: Remove coraza-http-wasm artifact
+        run: go run mage.go removeArtifact
 
       - name: Run e2e tests
         run: go run mage.go e2e

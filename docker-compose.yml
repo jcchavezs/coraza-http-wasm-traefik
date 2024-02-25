@@ -1,15 +1,17 @@
 version: '3.7'
 
 services:
-  traefik:
+  traefik_base:
     image: traefik:v3.0.0-rc1
     ports:
       - 8080:80
     command:
       - "--configFile=/etc/traefik/config-static.yaml"
     volumes:
-      - ./${CONFIG_DIR}:/etc/traefik # by default CONFIG_DIR=.
-      - ./build:/plugins-local/src/github.com/jcchavezs/coraza-http-wasm
+      - ./:/etc/traefik
+
+  traefik:
+    extends: traefik_base
     depends_on:
       - httpbin
 

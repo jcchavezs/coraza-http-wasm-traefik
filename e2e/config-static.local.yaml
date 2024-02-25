@@ -15,4 +15,4 @@ providers:
 experimental:
   localPlugins:
     coraza:
-      moduleName: github.com/jcchavezs/coraza-http-wasm
+      moduleName: github.com/jcchavezs/coraza-http-wasm-traefik

@@ -12,6 +12,9 @@ import (
 	"path"
 	"strings"
 
+	_ "embed"
+
+	"github.com/magefile/mage/mg"
 	"github.com/magefile/mage/sh"
 )
 
@@ -81,11 +84,15 @@ const artifactURL = "https://github.com/jcchavezs/coraza-http-wasm/releases/down
 
 func downloadHTTPWasmArtifact(version, dir string) error {
 	url := strings.Replace(artifactURL, "{version}", version, 2)
-	return errors.Join(
-		download(url, path.Join(dir, "coraza-http-wasm.zip")),
-		unzip(path.Join(dir, "coraza-http-wasm.zip")),
-		os.Remove(path.Join(dir, "coraza-http-wasm.zip")),
-	)
+	if err := download(url, path.Join(dir, "coraza-http-wasm.zip")); err != nil {
+		return err
+	}
+
+	if err := unzip(path.Join(dir, "coraza-http-wasm.zip")); err != nil {
+		return err
+	}
+
+	return os.Remove(path.Join(dir, "coraza-http-wasm.zip"))
 }
 
 func getHttpWasmVersion() (string, error) {
@@ -112,7 +119,10 @@ func DownloadArtifact() error {
 	}
 
 	return downloadHTTPWasmArtifact(version, "./build")
+}
 
+func CleanUpArtifact() error {
+	return os.RemoveAll("build")
 }
 
 func copy(src, dst string) error {
@@ -132,18 +142,23 @@ func copy(src, dst string) error {
 	return err
 }
 
-func E2E() error {
+type e2eSource string
+
+const (
+	e2eSourceLocal  e2eSource = "local"
+	e2eSourceRemote e2eSource = "remote"
+)
+
+func e2e(source e2eSource) error {
 	var err error
 
-	if err = copy(".traefik.yml", "build/.traefik.yml"); err != nil {
-		return err
-	}
+	dockerComposeArgs := []string{"-f", "docker-compose.yml", "-f", "e2e/docker-compose.e2e.yml"}
 
-	if err = sh.RunV("docker-compose", "--file", "docker-compose.yml", "--env-file", "e2e/.env", "up", "-d", "traefik"); err != nil {
+	if err = sh.RunV("docker-compose", append(dockerComposeArgs, "up", "-d", "e2e_traefik_"+string(source))...); err != nil {
 		return err
 	}
 	defer func() {
-		_ = sh.RunV("docker-compose", "--file", "docker-compose.yml", "down", "-v")
+		_ = sh.RunV("docker-compose", append(dockerComposeArgs, "down", "-v")...)
 	}()
 
 	proxyHost := os.Getenv("TRAEFIK_HOST")
@@ -157,8 +172,49 @@ func E2E() error {
 
 	if err = sh.RunV("go", "run", "github.com/corazawaf/coraza/v3/http/e2e/cmd/httpe2e@main", "--proxy-hostport",
 		"http://"+proxyHost, "--httpbin-hostport", "http://"+httpbinHost); err != nil {
-		sh.RunV("docker-compose", "-f", "docker-compose.yml", "logs", "traefik")
+		sh.RunV("docker-compose", append(dockerComposeArgs, "logs", "traefik")...)
 	}
 
 	return err
+}
+
+func E2E() error {
+	return e2e(e2eSourceRemote)
+}
+
+func E2ELocal() error {
+	if err := copy(".traefik.yml", "build/.traefik.yml"); err != nil {
+		return err
+	}
+
+	if err := DownloadArtifact(); err != nil {
+		return err
+	}
+
+	return e2e(e2eSourceLocal)
+}
+
+//go:embed config-static.yaml.tmpl
+var staticConfig string
+
+func UpdateVersion() error {
+	renderedStaticConfig := strings.Replace(staticConfig, "{{version}}", os.Getenv("VERSION"), 1)
+
+	return errors.Join(
+		os.WriteFile("config-static.yaml", []byte(renderedStaticConfig), 0644),
+		os.WriteFile("e2e/config-static.remote.yaml", []byte(renderedStaticConfig), 0644),
+	)
+}
+
+var errCommitFormatting = errors.New("files not formatted, please commit formatting changes")
+
+// Lint verifies code quality.
+func Lint() error {
+	mg.SerialDeps(UpdateVersion)
+
+	if sh.Run("git", "diff", "--exit-code") != nil {
+		return errCommitFormatting
+	}
+
+	return nil
 }

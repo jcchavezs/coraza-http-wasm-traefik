@@ -1,0 +1,25 @@
+version: '3.7'
+
+services:
+  e2e_traefik_local:
+    extends:
+      file: docker-compose.yml
+      service: traefik_base
+    command:
+      - "--configFile=/etc/traefik/config-static.local.yaml"
+    depends_on:
+      - httpbin
+    volumes:
+      - ./e2e:/etc/traefik
+      - ./build:/plugins-local/src/github.com/jcchavezs/coraza-http-wasm-traefik
+
+  e2e_traefik_remote:
+    extends:
+      file: docker-compose.yml
+      service: traefik_base
+    command:
+      - "--configFile=/etc/traefik/config-static.remote.yaml"
+    depends_on:
+      - httpbin
+    volumes:
+      - ./e2e:/etc/traefik
