@@ -64,6 +64,7 @@ jobs:
 
       - name: Push build artifact to release
         run: |
+          set +e
           zip -j build/coraza-http-wasm-$VERSION.zip build/coraza-http-wasm.wasm LICENSE
           gh release upload $VERSION ./build/coraza-http-wasm-$VERSION.zip --clobber
         env:
