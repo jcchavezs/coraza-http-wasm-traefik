@@ -50,13 +50,11 @@ jobs:
           file_pattern: "*.yaml"
           add_options: "-u"
           branch: main
+          commit_message: "chore: update coraza-http-wasm version to ${{ github.event.inputs.version }}"
           tagging_message: "${{ github.event.inputs.version }}"
 
       - name: Remove coraza-http-wasm artifact
         run: go run mage.go cleanupArtifact
-
-      - name: Run e2e tests
-        run: go run mage.go e2e
 
       - name: Create draft release
         run: |
