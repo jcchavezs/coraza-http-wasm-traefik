@@ -12,7 +12,7 @@ env:
   GO_VERSION: "1.21.x"
 
 jobs:
-  build:
+  release:
     runs-on: ubuntu-latest
 
     permissions:
@@ -53,7 +53,7 @@ jobs:
           tagging_message: "${{ github.event.inputs.version }}"
 
       - name: Remove coraza-http-wasm artifact
-        run: go run mage.go removeArtifact
+        run: go run mage.go cleanupArtifact
 
       - name: Run e2e tests
         run: go run mage.go e2e

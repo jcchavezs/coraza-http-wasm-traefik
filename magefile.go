@@ -121,7 +121,7 @@ func DownloadArtifact() error {
 	return downloadHTTPWasmArtifact(version, "./build")
 }
 
-func CleanUpArtifact() error {
+func CleanupArtifact() error {
 	return os.RemoveAll("build")
 }
 
