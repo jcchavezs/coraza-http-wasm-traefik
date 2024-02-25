@@ -37,6 +37,8 @@ jobs:
 
       - name: Run e2e tests
         run: go run mage.go e2eLocal
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Update version to ${{ github.event.inputs.version }}
         run: go run mage.go updateVersion
