@@ -121,10 +121,6 @@ func DownloadArtifact() error {
 	return downloadHTTPWasmArtifact(version, "./build")
 }
 
-func CleanupArtifact() error {
-	return os.RemoveAll("build")
-}
-
 func copy(src, dst string) error {
 	in, err := os.Open(src)
 	if err != nil {

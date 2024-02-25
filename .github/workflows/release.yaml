@@ -53,9 +53,6 @@ jobs:
           commit_message: "chore: update coraza-http-wasm version to ${{ github.event.inputs.version }}"
           tagging_message: "${{ github.event.inputs.version }}"
 
-      - name: Remove coraza-http-wasm artifact
-        run: go run mage.go cleanupArtifact
-
       - name: Create draft release
         run: |
           set +e
