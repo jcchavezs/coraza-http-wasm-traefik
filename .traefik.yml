@@ -2,7 +2,7 @@ displayName: Coraza WAF
 runtime: wasm
 type: middleware
 summary: Coraza WAF http-wasm middleware
-wasmPath: ./coraza-http-wasm.wasm
+wasmPath: coraza-http-wasm.wasm
 testData:
   directives:
     - SecRuleEngine On

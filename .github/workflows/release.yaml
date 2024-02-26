@@ -45,6 +45,9 @@ jobs:
         env:
           VERSION: ${{ github.event.inputs.version }}
 
+      - name: Makes sure there are changes
+        run: test $(git status --porcelain=1 | wc -l) -gt 0
+
       - uses: stefanzweifel/git-auto-commit-action@v5
         with:
           file_pattern: "*.yaml"
