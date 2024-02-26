@@ -14,7 +14,6 @@ import (
 
 	_ "embed"
 
-	"github.com/magefile/mage/mg"
 	"github.com/magefile/mage/sh"
 )
 
@@ -194,23 +193,14 @@ func E2ELocal() error {
 var staticConfig string
 
 func UpdateVersion() error {
+	if os.Getenv("VERSION") == "" {
+		return errors.New("VERSION environment variable is not set")
+	}
+
 	renderedStaticConfig := strings.Replace(staticConfig, "{{version}}", os.Getenv("VERSION"), 1)
 
 	return errors.Join(
 		os.WriteFile("config-static.yaml", []byte(renderedStaticConfig), 0644),
 		os.WriteFile("e2e/config-static.remote.yaml", []byte(renderedStaticConfig), 0644),
 	)
-}
-
-var errCommitFormatting = errors.New("files not formatted, please commit formatting changes")
-
-// Lint verifies code quality.
-func Lint() error {
-	mg.SerialDeps(UpdateVersion)
-
-	if sh.Run("git", "diff", "--exit-code") != nil {
-		return errCommitFormatting
-	}
-
-	return nil
 }

@@ -18,4 +18,4 @@ experimental:
   plugins:
     coraza:
       moduleName: github.com/jcchavezs/coraza-http-wasm-traefik
-      version: v0.1.0
+      version: 
