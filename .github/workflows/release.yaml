@@ -1,10 +1,12 @@
 name: Release
 
+run-name: Release of ${{ inputs.version }}
+
 on:
   workflow_dispatch:
     inputs:
       version:
-        description: "coraza-http-wasm version"
+        description: "coraza-http-wasm version e.g. v0.2.1"
         required: true
         type: string
 
