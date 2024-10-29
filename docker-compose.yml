@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   traefik_base:
-    image: traefik:v3.0.0-rc3
+    image: traefik:v3.2.0
     ports:
       - 8080:80
     command:
