@@ -147,13 +147,13 @@ const (
 func e2e(source e2eSource) error {
 	var err error
 
-	dockerComposeArgs := []string{"-f", "docker-compose.yml", "-f", "e2e/docker-compose.e2e.yml"}
+	dockerComposeArgs := []string{"compose", "-f", "docker-compose.yml", "-f", "e2e/docker-compose.e2e.yml"}
 
-	if err = sh.RunV("docker-compose", append(dockerComposeArgs, "up", "-d", "e2e_traefik_"+string(source))...); err != nil {
+	if err = sh.RunV("docker", append(dockerComposeArgs, "up", "-d", "e2e_traefik_"+string(source))...); err != nil {
 		return err
 	}
 	defer func() {
-		_ = sh.RunV("docker-compose", append(dockerComposeArgs, "down", "-v")...)
+		_ = sh.RunV("docker", append(dockerComposeArgs, "down", "-v")...)
 	}()
 
 	proxyHost := os.Getenv("TRAEFIK_HOST")
@@ -167,7 +167,7 @@ func e2e(source e2eSource) error {
 
 	if err = sh.RunV("go", "run", "github.com/corazawaf/coraza/v3/http/e2e/cmd/httpe2e@main", "--proxy-hostport",
 		"http://"+proxyHost, "--httpbin-hostport", "http://"+httpbinHost); err != nil {
-		sh.RunV("docker-compose", append(dockerComposeArgs, "logs", "traefik")...)
+		sh.RunV("docker", append(dockerComposeArgs, "logs", "traefik")...)
 	}
 
 	return err
