@@ -2,6 +2,8 @@
 
 This repository publishes the coraza-http-wasm as a plugin and also contains examples on how to run coraza-http-wasm as a traefik plugin.
 
+The wasm executable is built in the [coraza-http-wasm](https://github.com/jcchavezs/coraza-http-wasm/tree/main) repository.
+
 ## Getting started
 
 You can run the docker compose example:
