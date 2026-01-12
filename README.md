@@ -1,5 +1,7 @@
 # Coraza http-wasm traefik plugin
 
+**DISCLAIMER: This project isn't actively maintained. This project isn't meant to be run in production as it is.**
+
 This repository publishes the coraza-http-wasm as a plugin and also contains examples on how to run coraza-http-wasm as a traefik plugin.
 
 The wasm executable is built in the [coraza-http-wasm](https://github.com/jcchavezs/coraza-http-wasm/tree/main) repository.
