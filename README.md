@@ -1,6 +1,6 @@
 # Coraza http-wasm traefik plugin
 
-**DISCLAIMER: This project isn't actively maintained. This project isn't meant to be run in production as it is.**
+**DISCLAIMER: This project is still in early stages and it can be used to get a grasp on the Coraza + Traefik integration over Wasm. If you are looking for production grade performance I recommend you look into [Coraza native integration with Traefik](https://traefik.io/press/traefik-labs-accelerates-path-towards-api-runtime-governance)**
 
 This repository publishes the coraza-http-wasm as a plugin and also contains examples on how to run coraza-http-wasm as a traefik plugin.
 
