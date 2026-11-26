@@ -23,10 +23,10 @@ jobs:
       contents: write
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
       - name: Install Go
-        uses: actions/setup-go@v3
+        uses: actions/setup-go@be3c94b385c4f180051c996d336f57a34c397495 # v3.6.1
         with:
           go-version: ${{ env.GO_VERSION }}
           cache: true
@@ -50,7 +50,7 @@ jobs:
       - name: Makes sure there are changes
         run: test $(git status --porcelain=1 | wc -l) -gt 0
 
-      - uses: stefanzweifel/git-auto-commit-action@v5
+      - uses: stefanzweifel/git-auto-commit-action@b863ae1933cb653a53c021fe36dbb774e1fb9403 # v5.2.0
         with:
           file_pattern: "*.yaml"
           add_options: "-u"
